@@ -2,12 +2,16 @@
 pragma solidity ^0.8.0;
 
 
+
 contract Fund_Transfer {
     address payable sender;
     uint amount;
     uint [] t;
     uint final_amount;
     uint f;
+    event paid();
+    event fn_amt(uint fa);
+    event transferred();
     constructor() payable{
         sender = payable(msg.sender);
         amount = msg.value;
@@ -17,15 +21,18 @@ contract Fund_Transfer {
     function _transfer(address payable r) internal {
         require(sender.balance >= amount, "Not enough balance");
         r.transfer(amount);
+        emit transferred();
     }
 
     function _final_calculator(uint _rate, uint _time) internal{
         final_amount = final_amount + (amount * _rate * _time)/100;
+        emit fn_amt(final_amount);
     }
 
     function _loan_repayment(address payable r) internal{
         require(r.balance >= final_amount , "Not Enough Balance");
         sender.transfer(final_amount);
+        emit paid();
         
     }
 
@@ -65,4 +72,3 @@ contract Fund_Transfer {
 
     }
 }
-
